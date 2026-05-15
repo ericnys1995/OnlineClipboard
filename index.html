@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Realtime Clipboard</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Private realtime text board</p>
+        <h1>Realtime Clipboard</h1>
+        <p class="hero-copy">
+          多 slots、手動同步、browser 端 AES-GCM 加密。適合兩部機之間暫存 code / log / notes。
+        </p>
+      </div>
+      <div class="hero-badges">
+        <span id="authStatus" class="pill muted">Firebase 未連接</span>
+        <span id="roomStatus" class="pill muted">No room</span>
+      </div>
+    </header>
+
+    <section class="panel setup-panel" aria-labelledby="setupTitle">
+      <div>
+        <h2 id="setupTitle">Connect room</h2>
+        <p>
+          兩部機輸入同一個 room name 同 passphrase。Passphrase 只留喺 browser 記憶體，唔會上傳。
+        </p>
+      </div>
+
+      <div class="setup-grid">
+        <label>
+          <span>Room name</span>
+          <input id="roomInput" autocomplete="off" placeholder="例如 dev-clipboard" />
+        </label>
+        <label>
+          <span>Passphrase</span>
+          <input id="passInput" type="password" autocomplete="current-password" placeholder="兩部機用同一句" />
+        </label>
+        <button id="connectBtn" class="primary-btn">Connect</button>
+      </div>
+
+      <p id="setupMessage" class="message"></p>
+    </section>
+
+    <section class="toolbar panel">
+      <div>
+        <strong>Slots</strong>
+        <span id="syncStatus" class="subtle">未連接</span>
+      </div>
+      <div class="toolbar-actions">
+        <button id="clearExpiredBtn" class="ghost-btn">Clear expired</button>
+        <button id="lockBtn" class="ghost-btn">Lock</button>
+      </div>
+    </section>
+
+    <main id="slotsGrid" class="slots-grid" aria-live="polite"></main>
+
+    <footer class="footer-note">
+      唔好貼 password、API key、private key、客戶資料或公司 confidential data。Firebase config 係公開資料，真正保護靠 Security Rules + 加密 + room/passphrase。
+    </footer>
+  </div>
+
+  <template id="slotTemplate">
+    <article class="slot-card">
+      <div class="slot-topline">
+        <input class="slot-label" maxlength="40" aria-label="Slot label" />
+        <span class="slot-size">0 B</span>
+      </div>
+
+      <textarea class="slot-text" spellcheck="false" placeholder="Paste code / log / prompt / answer here..."></textarea>
+
+      <div class="slot-meta">
+        <span class="slot-updated">未同步</span>
+        <span class="slot-expiry">No TTL</span>
+      </div>
+
+      <div class="slot-actions">
+        <select class="slot-ttl" aria-label="TTL">
+          <option value="0">No auto clear</option>
+          <option value="1800000">30 mins</option>
+          <option value="7200000" selected>2 hours</option>
+          <option value="86400000">1 day</option>
+          <option value="604800000">7 days</option>
+        </select>
+        <button class="save-btn primary-btn">Save</button>
+        <button class="copy-btn ghost-btn">Copy</button>
+        <button class="clear-btn danger-btn">Clear</button>
+      </div>
+    </article>
+  </template>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
